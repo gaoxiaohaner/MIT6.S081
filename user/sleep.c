@@ -15,7 +15,4 @@ int main(int argc , char *argv[]){
         sleep(times);
         exit(0);
     }
-
-
-    
 }
