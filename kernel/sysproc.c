@@ -66,7 +66,7 @@ sys_sleep(void)
   }
   release(&tickslock);
   return 0;
-}
+} 
 
 uint64
 sys_kill(void)
