@@ -175,7 +175,7 @@ syscall(void)
     // 这里为啥不能用 == ?
     // & 代表是与运算符，按位与从而判断是否相同
     
-    if((1<<num) & p->syscallnumber){
+    if((p->syscallnumber >> num) & 1){
       printf("%d: syscall %s -> %d\n", p->pid, SYSCALL_name[num], p->trapframe->a0);
     } 
   } else {
