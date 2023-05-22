@@ -22,6 +22,7 @@ int getpid(void);
 char* sbrk(int);
 int sleep(int);
 int uptime(void);
+int trace(int); // int是系统调用号
 
 // ulib.c
 int stat(const char*, struct stat*);

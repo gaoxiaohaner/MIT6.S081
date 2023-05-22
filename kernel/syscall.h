@@ -3,7 +3,7 @@
 #define SYS_exit    2
 #define SYS_wait    3
 #define SYS_pipe    4
-#define SYS_read    5
+#define SYS_read    5 // 1<<5 1 扩大 2^5  = 32  trace(32)
 #define SYS_kill    6
 #define SYS_exec    7
 #define SYS_fstat   8
@@ -20,3 +20,4 @@
 #define SYS_link   19
 #define SYS_mkdir  20
 #define SYS_close  21
+#define SYS_trace  22

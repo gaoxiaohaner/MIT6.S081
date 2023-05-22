@@ -101,6 +101,7 @@ extern uint64 sys_unlink(void);
 extern uint64 sys_link(void);
 extern uint64 sys_mkdir(void);
 extern uint64 sys_close(void);
+extern uint64 sys_trace(void);
 
 // An array mapping syscall numbers from syscall.h
 // to the function that handles the system call.
@@ -126,6 +127,7 @@ static uint64 (*syscalls[])(void) = {
 [SYS_link]    sys_link,
 [SYS_mkdir]   sys_mkdir,
 [SYS_close]   sys_close,
+[SYS_trace]   sys_trace,
 };
 
 void
@@ -134,11 +136,48 @@ syscall(void)
   int num;
   struct proc *p = myproc();
 
+  // 创建一个数组索引，便于查找
+  static char *SYSCALL_name[] = {
+  [SYS_fork]    "fork",
+  [SYS_exit]    "exit",
+  [SYS_wait]    "wait",
+  [SYS_pipe]    "pipe",
+  [SYS_read]    "read",
+  [SYS_kill]    "kill",
+  [SYS_exec]    "exec",
+  [SYS_fstat]   "fstat",
+  [SYS_chdir]   "chdir",
+  [SYS_dup]     "dup",
+  [SYS_getpid]  "getpid",
+  [SYS_sbrk]    "sbrk",
+  [SYS_sleep]   "sleep",
+  [SYS_uptime]  "uptime",
+  [SYS_open]    "open",
+  [SYS_write]   "write",
+  [SYS_mknod]   "mknod",
+  [SYS_unlink]  "unlink",
+  [SYS_link]    "link",
+  [SYS_mkdir]   "mkdir",
+  [SYS_close]   "close",
+  [SYS_trace]   "trace",
+  };
+
+
   num = p->trapframe->a7;
   if(num > 0 && num < NELEM(syscalls) && syscalls[num]) {
     // Use num to lookup the system call function for num, call it,
     // and store its return value in p->trapframe->a0
     p->trapframe->a0 = syscalls[num]();
+
+    // 这里必须要判断,不然就全部输出了，只有当是我们trace的mask才能输出
+    // 我们trace的mask在p->syscallnumber中保存，num是系统的进程的？
+    // 一般 syscallnumber = 1<<num
+    // 这里为啥不能用 == ?
+    // & 代表是与运算符，按位与从而判断是否相同
+    
+    if((1<<num) & p->syscallnumber){
+      printf("%d: syscall %s -> %d\n", p->pid, SYSCALL_name[num], p->trapframe->a0);
+    } 
   } else {
     printf("%d %s: unknown sys call %d\n",
             p->pid, p->name, num);

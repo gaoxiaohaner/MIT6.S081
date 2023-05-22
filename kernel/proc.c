@@ -296,6 +296,9 @@ fork(void)
   }
   np->sz = p->sz;
 
+  // 将父进程系统调用掩码 copy 到 子进程
+  np->syscallnumber = p->syscallnumber;
+
   // copy saved user registers.
   *(np->trapframe) = *(p->trapframe);
 

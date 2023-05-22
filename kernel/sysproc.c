@@ -5,7 +5,15 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+struct proc;
 
+uint64
+sys_trace(int number)
+{
+  // 获取系统调用的参数
+  argint(0, &(myproc()->syscallnumber));
+  return 0;
+}
 uint64
 sys_exit(void)
 {
