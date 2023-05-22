@@ -5,6 +5,8 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
+
 struct proc;
 
 uint64
@@ -98,4 +100,26 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+
+uint64 
+sys_sysinfo(void)
+{
+    // uint64 getnproc(void)
+    // 但是这个数据 getnproc 这两个函数都是从kernel data
+    // 后续要将其发送到user space中才能打印出来 - copyout
+
+    struct sysinfo info;  // 题目要求是将struct进行kernel -> user space
+    info.freemem = getfreemem();
+    info.nproc = getnproc();
+
+    struct proc *p = myproc();
+
+    uint64 addr = 0;
+    argaddr(0, &addr);
+
+    if(copyout(p->pagetable, addr, (char *)&info, sizeof(info)) < 0)
+        return -1;
+    return 0;
 }

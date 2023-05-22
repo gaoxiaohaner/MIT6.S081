@@ -6,6 +6,7 @@
 
 void
 sinfo(struct sysinfo *info) {
+  // 这里就是用info保存系统信息
   if (sysinfo(info) < 0) {
     printf("FAIL: sysinfo failed");
     exit(1);

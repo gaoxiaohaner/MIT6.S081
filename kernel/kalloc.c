@@ -80,3 +80,26 @@ kalloc(void)
     memset((char*)r, 5, PGSIZE); // fill with junk
   return (void*)r;
 }
+
+// 这都是直接从kernel space中的函数
+uint64 getfreemem(){
+  // get the number of bytes of free memory 空闲的内存
+  // 结合前两个函数做
+  struct run *r;
+  uint64 number = 0;
+
+  acquire(&kmem.lock);
+  r = kmem.freelist;
+
+  while(r){
+    r = r->next;
+    number++;
+  }
+  release(&kmem.lock);
+  // memset((char*)r, 5, PGSIZE); // fill with junk
+  // number得到的仿佛是page numbers 题目要得到bytes 所以 * PGSIZE
+  return  number * PGSIZE;
+
+
+
+}

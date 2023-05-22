@@ -684,3 +684,24 @@ procdump(void)
     printf("\n");
   }
 }
+
+// 为啥这里不能是uint呢
+// 返回的值应该保存到sysinfo.h中的sysinfo结构体中，而结构体是用uint64进行存储的
+uint64 getnproc(){
+  // 得到unused进程数
+  uint64 number = 0;
+
+  struct proc *p;
+
+  for(p = proc; p<&proc[NPROC]; p++){
+    // 我这里仿照的procdump函数的写法，直接进行字符串之间的对比
+    if(p->state != UNUSED){
+      // 如果是未被使用的
+      number++;
+    }
+  }
+
+  return number;
+
+
+}
